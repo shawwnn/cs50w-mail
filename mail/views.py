@@ -41,7 +41,7 @@ def compose(request):
     recipients = []
     for email in emails:
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username=email)
             recipients.append(user)
         except User.DoesNotExist:
             return JsonResponse({
@@ -67,7 +67,6 @@ def compose(request):
         email.save()
         for recipient in recipients:
             email.recipients.add(recipient)
-        email.save()
 
     return JsonResponse({"message": "Email sent successfully."}, status=201)
 
