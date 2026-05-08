@@ -54,26 +54,6 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
-
-  // Prevent multiple event listeners (important fix)
-  const form = document.querySelector('#compose-form');
-  form.onsubmit = function (event) {
-    event.preventDefault();
-
-    fetch('/emails', {
-      method: 'POST',
-      body: JSON.stringify({
-        recipients: document.querySelector('#compose-recipients').value,
-        subject: document.querySelector('#compose-subject').value,
-        body: document.querySelector('#compose-body').value
-      })
-    })
-    .then(response => response.json())
-    .then(result => {
-      console.log(result);
-      load_mailbox('sent');
-    });
-  };
 }
 
 async function load_mailbox(mailbox) {
@@ -157,6 +137,13 @@ async function view_email(id, mailbox) {
       })
     })
 
+    // handle seperator - clean email body 
+    const bodyRaw = document.querySelector("#compose-body").value;
+    const separator = "Reply below this line";
+    const body = bodyRaw.includes(separator)
+      ? bodyRaw.split(separator)[1].trim()
+      : bodyRaw;
+
     // email container 
     const container = document.createElement('div');
 
@@ -195,12 +182,15 @@ async function view_email(id, mailbox) {
     }
 
     // reply button
-    // REPLY BUTTON LOGIC
-    // // OPEN COMOPOSE VIEW
-    // // PREFILL RECIPIENTS
-    // // // PREVENT DDUPICATE RE:
-    // // PREFILL SUBJECT
-    // // PREFILL BODY
+    if(mailbox !== "sent" && mailbox !== "archive"){
+      const replyBtn = document.createElement("button");
+      replyBtn.innerHTML = "Reply";
+      replyBtn.style.marginLeft = '10px';
+      replyBtn.addEventListener("click", () => {
+      prepare_reply(email)
+    })
+    container.appendChild(replyBtn)
+    }
 
     // finally render everything
     emailView.append(container)
@@ -227,4 +217,32 @@ async function toggle_archive(id, shouldArchive) {
   } catch (error) {
     console.log("Archive error: ", error)
   }
+}
+
+function prepare_reply(email) {  
+  // Open compose view first
+  compose_email();
+
+  // pre populate To:
+  document.querySelector("#compose-recipients").value = email.sender;
+
+  // Subject handling (avoid duplicate "Re:")
+  let subject = email.subject
+
+  if(!subject.startsWith("Re:")) {
+    subject = `Re: ${subject}`
+  }
+  document.querySelector("#compose-subject").value = subject
+
+  // Body template
+  document.querySelector("#compose-body").value =
+`On ${email.timestamp} ${email.sender} wrote:
+
+${email.body}
+
+---------------------------
+Reply below this line
+---------------------------
+
+`;
 }
