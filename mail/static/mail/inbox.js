@@ -82,6 +82,8 @@ async function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').innerHTML = '';
+
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -154,8 +156,6 @@ async function view_email(id, mailbox) {
         read: true
       })
     })
-    console.log(email);
-
 
     // email container 
     const container = document.createElement('div');
@@ -180,7 +180,19 @@ async function view_email(id, mailbox) {
     container.appendChild(backBtn)
 
     // archive button
-    // ARCHIVE BUTTON LOGIC
+    if(mailbox !== "sent"){
+      const archiveBtn = document.createElement("button");
+      archiveBtn.innerHTML = email.archived ? "Unarchive" : "Archive";
+      archiveBtn.style.marginLeft = '10px';
+
+      archiveBtn.addEventListener("click", async() => {
+        await toggle_archive(email.id, !email.archived)
+
+        await load_mailbox(mailbox)
+      })
+
+      container.appendChild(archiveBtn)
+    }
 
     // reply button
     // REPLY BUTTON LOGIC
@@ -196,5 +208,23 @@ async function view_email(id, mailbox) {
   } catch (error) {
     console.log("Error: ", error)
     emailView.innerHTML = '<h3>Error loading email.</h3>'
+  }
+}
+
+async function toggle_archive(id, shouldArchive) {
+  try {
+    const response = await fetch(`/emails/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        archived: shouldArchive
+      })
+    })
+
+    if(!response.ok) {
+      const result = await response.json()
+      console.log(result.error)
+    }
+  } catch (error) {
+    console.log("Archive error: ", error)
   }
 }
