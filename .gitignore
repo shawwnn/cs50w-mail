@@ -1,3 +1,13 @@
+<<<<<<< HEAD
 db.sqlite3
 __pycache__/
 *.pyc
+=======
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+db.sqlite3
+>>>>>>> feat/03-view-single-email
