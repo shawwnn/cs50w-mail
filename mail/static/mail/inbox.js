@@ -6,27 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
-<<<<<<< HEAD
-  // trigger submit POST compose email
-  // document.querySelector('#compose-form').onsubmit = function(event) {
-  //   event.preventDefault();
-  //   console.log("ONLY ONCE SHOULD PRINT");
-
-  //   fetch('/emails', {
-  //     method: 'POST',
-  //     body: JSON.stringify({
-  //       recipients: document.querySelector('#compose-recipients').value,
-  //       subject: document.querySelector('#compose-subject').value,
-  //       body: document.querySelector('#compose-body').value
-  //     })
-  //   })
-  //   .then(response => response.json())
-  //   .then(result => {
-  //     console.log(result);
-  //     load_mailbox('sent');
-  //   });
-  // };
-=======
   document.querySelector("#compose-form").onsubmit = async (event) => {
     event.preventDefault();
 
@@ -60,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log("Error:", error);
     }
   };
->>>>>>> feat/03-view-single-email
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -108,11 +86,6 @@ async function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-<<<<<<< HEAD
-
-  
-}
-=======
   // fetch emails
   try {
     const response = await fetch(`/emails/${mailbox}`)
@@ -225,5 +198,3 @@ async function view_email(id, mailbox) {
     emailView.innerHTML = '<h3>Error loading email.</h3>'
   }
 }
-
->>>>>>> feat/03-view-single-email

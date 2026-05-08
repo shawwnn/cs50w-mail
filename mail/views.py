@@ -53,11 +53,8 @@ def compose(request):
     recipients = []
     for username in emails:
         try:
-<<<<<<< HEAD
             user = User.objects.get(username=email)
-=======
-            user = User.objects.get(username=username)
->>>>>>> feat/03-view-single-email
+
             recipients.append(user)
         except User.DoesNotExist:
             return JsonResponse({
@@ -84,11 +81,8 @@ def compose(request):
 
         for recipient in recipients:
             email.recipients.add(recipient)
-<<<<<<< HEAD
-=======
 
         email.save()
->>>>>>> feat/03-view-single-email
 
     return JsonResponse({
         "message": "Email sent successfully."
