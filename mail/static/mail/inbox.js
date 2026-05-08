@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function compose_email() {
+  // Fix Problem: old email stays visible in some transitions
+  document.querySelector('#email-view').style.display = 'none';
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -57,7 +59,8 @@ function compose_email() {
 }
 
 async function load_mailbox(mailbox) {
-  console.count("load_mailbox called");
+  // Fix Problem: old email stays visible in some transitions
+  document.querySelector('#email-view').style.display = 'none';
 
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -138,11 +141,11 @@ async function view_email(id, mailbox) {
     })
 
     // handle seperator - clean email body 
-    const bodyRaw = document.querySelector("#compose-body").value;
-    const separator = "Reply below this line";
-    const body = bodyRaw.includes(separator)
-      ? bodyRaw.split(separator)[1].trim()
-      : bodyRaw;
+    // const bodyRaw = document.querySelector("#compose-body").value;
+    // const separator = "Reply below this line";
+    // const body = bodyRaw.includes(separator)
+    //   ? bodyRaw.split(separator)[1].trim()
+    //   : bodyRaw;
 
     // email container 
     const container = document.createElement('div');
